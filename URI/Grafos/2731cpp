@@ -1,0 +1,95 @@
+#include <bits/stdc++.h>
+#define inf 123456789
+using namespace std;
+typedef pair<int,int> ii; 
+vector<ii> G[100010];
+int nv,na,aqui,minu;
+int p[100000];
+
+void pp(int u)
+{
+	if (u == aqui)
+	{
+		printf("%d",aqui);
+		return;
+	}
+	pp(p[u]);
+	printf(" %d", u);
+}
+
+int dj(int s,int a)
+{
+	priority_queue<ii, vector<ii>, greater<ii> > filaP;
+	filaP.push(ii(0,s));
+	vector<int>dist(100000,inf);
+	dist[s] = 0;
+	
+	while (!filaP.empty())
+	{
+		
+		ii front = filaP.top();
+		filaP.pop();
+		int d = front.first;
+		int u = front.second;
+				
+		if(d > dist[u]) continue;	
+		
+
+		for (int i = 0; i < (int)G[u].size(); i++)
+		{
+			ii v = G[u][i];
+			
+			if (dist[u] + v.second < dist[v.first])
+			{
+				
+				dist[v.first] = dist[u] + v.second;
+				p[v.first] = u;
+				filaP.push(ii(dist[v.first], v.first));
+				
+				
+			}	
+		}	
+	}
+	
+	
+	
+	return dist[a];
+}
+
+int main()
+{
+	//freopen("in","r",stdin);
+	int a,b;
+	while(scanf(" %d%d", &nv,&na) && nv != 0 && na != 0)
+	{
+		for (int i = 0; i < 10000; i++)
+		{
+			G[i].clear();
+			p[i] = 0;
+		}
+		for (int i = 0; i < na; i++)
+		{
+			cin>>a>>b>>minu;
+			G[a].push_back(ii(b,minu));
+			G[b].push_back(ii(a,minu));	
+		}
+		scanf(" %d",&aqui);
+		int t = dj(aqui,1);
+		if(t > 120)
+		{
+			int s = abs(t-120);
+			printf("It will be %d minutes late. Travel time - %d - best way - ", s,t);
+			pp(1);
+			printf("\n");
+		}
+		else
+		{
+			printf("Will not be late. Travel time - %d - best way - ", t);
+			pp(1);
+			printf("\n");
+		}
+		
+	}
+	
+	
+}
